@@ -7,6 +7,7 @@
         <canvas id="canvas" width="800" height="800" style="background-color:#000;"></canvas>
 
         <script>
+            var lines = [];
             var c = document.getElementById('canvas');
             var ctx = c.getContext('2d');
             ctx.strokeStyle = '#fff';
@@ -16,7 +17,7 @@
                 return Math.round(raw / 65535 * 255);
             }
 
-            function render(lines) {
+            function render() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 lines.forEach(function(line, i) {
@@ -35,12 +36,14 @@
                         ctx.stroke();
                     }
                 });
+                requestAnimationFrame(render);
             }
+            requestAnimationFrame(render);
 
             var host = window.document.location.host.replace(/:.*/, '');
             var ws = new WebSocket('ws://' + host + ':8080');
             ws.onmessage = function (event) {
-                render(JSON.parse(event.data));
+                lines = JSON.parse(event.data);
             };
         </script>
     </body>
