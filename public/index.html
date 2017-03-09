@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Monitor</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="800" style="background-color:#000;"></canvas>
+
+        <script>
+            var c = document.getElementById('canvas');
+            var ctx = c.getContext('2d');
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1;
+
+            function calculateColor(raw) {
+                return Math.round(raw / 65535 * 255);
+            }
+
+            function render(lines) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                lines.forEach(function(line, i) {
+                    if (i > 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(
+                            (lines[i - 1].x + 65535 / 2) / 65535 * canvas.width,
+                            (lines[i - 1].y + 65535 / 2) / 65535 * canvas.height
+                        );
+                        ctx.lineTo(
+                            (line.x + 65535 / 2) / 65535 * canvas.width,
+                            (line.y + 65535 / 2) / 65535 * canvas.height
+                        );
+                        ctx.closePath();
+                        ctx.strokeStyle = `rgb(${calculateColor(line.r)}, ${calculateColor(line.g)}, ${calculateColor(line.b)})`;
+                        ctx.stroke();
+                    }
+                });
+            }
+
+            var host = window.document.location.host.replace(/:.*/, '');
+            var ws = new WebSocket('ws://' + host + ':8080');
+            ws.onmessage = function (event) {
+                render(JSON.parse(event.data));
+            };
+        </script>
+    </body>
+</html>
