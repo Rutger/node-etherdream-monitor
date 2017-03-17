@@ -24,12 +24,12 @@
                     if (i > 0) {
                         ctx.beginPath();
                         ctx.moveTo(
-                            (lines[i - 1].x + 65535 / 2) / 65535 * canvas.width,
-                            (lines[i - 1].y + 65535 / 2) / 65535 * canvas.height
+                            (65535 - (lines[i - 1].x + 65535 / 2)) / 65535 * canvas.width,
+                            (65535 - (lines[i - 1].y + 65535 / 2)) / 65535 * canvas.height
                         );
                         ctx.lineTo(
-                            (line.x + 65535 / 2) / 65535 * canvas.width,
-                            (line.y + 65535 / 2) / 65535 * canvas.height
+                            (65535 - (line.x + 65535 / 2)) / 65535 * canvas.width,
+                            (65535 - (line.y + 65535 / 2)) / 65535 * canvas.height
                         );
                         ctx.closePath();
                         ctx.strokeStyle = `rgb(${calculateColor(line.r)}, ${calculateColor(line.g)}, ${calculateColor(line.b)})`;
